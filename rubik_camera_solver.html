@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rubik Camera Solver 3×3</title>
+<title>Rubik Vision — Solver 3×3</title>
 <style>
 :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0b1220;color:#edf3ff;font:15px system-ui,Arial}.wrap{max-width:850px;margin:auto;padding:20px}h1{margin:0 0 8px;font-size:27px}p{color:#b7c4da;line-height:1.5}.panel{background:#172238;border:1px solid #30425d;border-radius:18px;padding:16px;margin:16px 0}button,select{border:0;border-radius:10px;padding:12px 14px;background:#3878f6;color:white;font-weight:700;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}.buttons{display:flex;flex-wrap:wrap;gap:8px}.camera{position:relative;width:min(100%,460px);margin:auto;aspect-ratio:1;background:#05080f;overflow:hidden;border-radius:12px}video{width:100%;height:100%;object-fit:cover}canvas#overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:195px;margin:12px auto}.tile{aspect-ratio:1;border:2px solid #6e7d91;border-radius:6px;cursor:pointer}.faces{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px}.face{background:#101a2b;border-radius:12px;padding:8px;text-align:center}.face .grid{width:108px;gap:3px}.face .tile{border-width:1px}.palette{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}.swatch{width:39px;height:39px;border:3px solid #fff5;border-radius:9px;cursor:pointer}.swatch.active{outline:3px solid #64a6ff}.status{white-space:pre-wrap;color:#d8e4fa}.moves{font-size:24px;font-weight:800;letter-spacing:2px;line-height:1.6;overflow-wrap:anywhere}.hint{font-size:13px;color:#b9c9df}strong{color:white}
+
+body{background:radial-gradient(circle at 50% -10%,#233e78 0%,#0b1220 48%);min-height:100vh} .wrap{max-width:780px;padding:18px 14px 50px}.hero{padding:27px 12px 19px}.hero h1{font-size:clamp(34px,7vw,53px);line-height:1.05;letter-spacing:-2px;margin:11px 0}.hero h1 em{color:#78a9ff;font-style:normal}.eyebrow{color:#87aaff;font-size:11px;font-weight:800;letter-spacing:2.6px}.hero p{max-width:530px}.pill{display:inline-block;border:1px solid #3c5276;background:#1b2b48;border-radius:30px;padding:7px 10px;font-size:12px;margin:4px 4px 0 0;color:#d6e4ff}.panel{background:linear-gradient(145deg,#1b2942,#121d30);box-shadow:0 16px 38px #0003;border-color:#30405b;padding:18px;margin:14px 0}.panel h2{font-size:20px;margin:0 0 14px;letter-spacing:-.5px}.number{color:#83acff;margin-right:6px}.stepbar{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.stage{padding:11px 5px;border:1px solid #2d3c56;border-radius:12px;text-align:center;color:#8293b2;font-size:12px;font-weight:700}.stage.active{color:#fff;border-color:#4677d3;background:#213f74}.scan-progress{display:flex;gap:6px;margin:12px 0 16px}.scan-dot{height:6px;flex:1;border-radius:5px;background:#34445f}.scan-dot.done{background:#4dce99}.scan-dot.now{background:#76a7ff}.camera{border:1px solid #46648a;box-shadow:0 8px 25px #0006}.buttons button{flex:1;min-width:130px}button{transition:transform .12s,filter .12s}button:active{transform:scale(.97)}button.secondary{background:#2c3d59}select{background:#263c60;max-width:100%;margin:8px 0}.guide-empty{text-align:center;padding:40px 15px;color:#b7c4da;font-size:17px;line-height:2}.guide-top{display:flex;justify-content:space-between;color:#afc4e7;font-size:12px;font-weight:800;letter-spacing:1px}.progress-track{height:8px;border-radius:10px;background:#2c3c59;overflow:hidden;margin:10px 0 20px}#progressFill{height:100%;background:linear-gradient(90deg,#4d8cff,#60e0d0);width:0%;transition:width .2s}.move-display{display:flex;align-items:center;gap:17px;background:#101a2c;border:1px solid #334e73;padding:18px;border-radius:18px;margin-bottom:12px}.move-symbol{min-width:110px;text-align:center;font-size:66px;line-height:1.2;font-weight:900;color:#91b5ff}.move-detail strong{font-size:19px}.move-detail p{font-size:13px;margin:8px 0}.nav-buttons button{font-size:16px;padding:16px}.move-strip{display:flex;gap:6px;overflow-x:auto;padding:14px 0;margin-bottom:8px}.move-chip{border:1px solid #3b5072;border-radius:9px;padding:9px 12px;min-width:45px;text-align:center;font-weight:800;color:#aab9d1;cursor:pointer}.move-chip.current{background:#4078df;color:white;border-color:#6ea0ff}.move-chip.past{color:#77ddb3;border-color:#356f63}.face{border:1px solid #2a3e5b}.palette{margin:15px 0}.swatch{min-width:39px}.swatch.active{outline-offset:2px}#pinkPick{background:#d7519d}.hint{line-height:1.5}.scan-meter{height:9px;background:#263650;border-radius:12px;overflow:hidden;margin-top:15px}.scan-meter div{height:100%;width:0;background:linear-gradient(90deg,#48a5ff,#42e2b1);transition:width .2s}.camera{outline:2px solid #4c83dd22}.camera:after{content:"LIVE";position:absolute;top:12px;left:12px;background:#10273cdd;color:#66e7bd;font-weight:800;font-size:11px;letter-spacing:2px;padding:7px 10px;border-radius:8px}.face{transition:border-color .2s}.tile{transition:background .15s}.status{font-size:13px}@media(max-width:440px){.move-symbol{font-size:55px;min-width:85px}.move-detail strong{font-size:16px}.move-display{padding:12px;gap:10px}.buttons button{min-width:115px}}
 </style></head><body><main class="wrap">
-<h1>🧩 Rubik Camera Solver 3×3</h1><p>Scan keenam sisi kubus, perbaiki warna bila perlu, lalu dapatkan langkah penyelesaian. Berfungsi paling baik dengan pencahayaan terang.</p>
-<section class="panel"><h2>1. Scan sisi: <span id="current">U (Atas)</span></h2>
+<div class="hero"><span class="eyebrow">RUBIK VISION · 3×3</span><h1>Scan. Putar. <em>Selesai.</em></h1><p>Solver kamera dengan panduan langkah demi langkah. Bisa maju, mundur, dan melihat gerakan yang harus dilakukan.</p><div class="pill">📷 Scan 6 sisi</div><div class="pill">🎨 Deteksi pink</div><div class="pill">↩️ Navigasi langkah</div><div class="pill">🎯 Kalibrasi warna</div></div>
+<div class="stepbar"><div id="scanStage" class="stage active">1 · Scan</div><div id="checkStage" class="stage">2 · Koreksi</div><div id="solveStage" class="stage">3 · Selesaikan</div></div>
+<section class="panel"><h2><span class="number">01</span> Scan sisi <span id="current">U (Atas)</span></h2><div id="scanProgress" class="scan-progress"></div>
 <p id="instruction">Pegang sisi U menghadap kamera, sisi F (depan) mengarah ke bawah bingkai.</p>
 <div class="camera"><video id="video" autoplay muted playsinline></video><canvas id="overlay"></canvas></div>
-<div class="buttons" style="justify-content:center;margin-top:12px"><button id="start">Nyalakan kamera</button><button id="capture">Ambil warna</button><button id="next">Sisi berikutnya →</button></div>
+<div class="buttons" style="justify-content:center;margin-top:12px"><button id="start">Nyalakan kamera</button><button id="capture">Simpan hasil scan</button><button id="autoToggle" class="secondary">Auto-scan: ON</button><button id="next">Sisi berikutnya →</button></div>
 <p class="hint">Arah scan: U, R, F, D, L, B. Pertahankan orientasi kubus: U di atas, F di depan. Untuk U: F mengarah ke bawah gambar; R: U ke atas; F: U ke atas; D: F mengarah ke atas gambar; L: U ke atas; B: U ke atas. Setiap sisi dipotret lurus dari depan.</p>
-<p id="cameraStatus" class="status"></p></section>
-<section class="panel"><h2>2. Koreksi warna</h2><p>Pilih warna, lalu sentuh kotak yang ingin diperbaiki. Kotak tengah adalah warna pusat sisi dan dikunci setelah scan.</p>
-<div class="palette" id="palette"></div><div id="faces" class="faces"></div>
+<div class="scan-meter"><div id="stabilityFill"></div></div><p id="scanQuality" class="hint">Menunggu kamera...</p><div class="buttons"><button id="calibrate" class="secondary">🎯 Kalibrasi warna tengah</button><button id="clearCalibration" class="secondary">Hapus kalibrasi</button></div><p id="calibrationInfo" class="hint">Kalibrasi setiap warna dengan mengarahkan kotak tengah ke pusat bingkai, lalu tekan Kalibrasi.</p><p id="cameraStatus" class="status"></p><p class="hint">Warna pada 9 kotak terdeteksi langsung dari kamera. Tahan kubus stabil sekitar 2 detik. Auto-scan hanya menyimpan jika deteksi cukup yakin. Kamu juga bisa menekan Simpan hasil scan.</p><div class="grid" id="liveGrid"></div></section>
+<section class="panel"><h2><span class="number">02</span> Koreksi warna</h2><p>Pilih warna, lalu sentuh kotak yang ingin diperbaiki. Kotak tengah adalah warna pusat sisi dan dikunci setelah scan.</p>
+<div class="palette" id="palette"></div><p class="hint">Jika Rubik memakai stiker pink, pilih warna standar yang digantikan oleh pink:</p><select id="pinkAlias"><option value="R">Pink menggantikan merah</option><option value="L">Pink menggantikan oranye</option><option value="U">Pink menggantikan putih</option><option value="F">Pink menggantikan hijau</option><option value="D">Pink menggantikan kuning</option><option value="B">Pink menggantikan biru</option></select><button id="pinkPick" type="button" style="background:#e65fa5;margin-left:8px">Pilih warna pink</button><div id="faces" class="faces"></div>
 <div class="buttons"><button id="reset">Reset scan</button><button id="solve">Selesaikan Rubik</button></div><p id="validation" class="status"></p></section>
-<section class="panel"><h2>3. Langkah solusi</h2><p id="solution" class="moves">Belum ada solusi.</p><div class="buttons"><button id="prevMove">← Sebelumnya</button><button id="nextMove">Berikutnya →</button><button id="copy">Salin semua langkah</button></div><p id="progress"></p><p class="hint">Notasi: R kanan, L kiri, U atas, D bawah, F depan, B belakang. Tanda ' berarti berlawanan arah jarum jam, 2 berarti putar 180°.</p></section>
+<section class="panel guide" id="guide"><h2><span class="number">03</span> Panduan gerakan</h2>
+<div id="guideEmpty" class="guide-empty">🧩<br>Scan dan selesaikan Rubik untuk membuka panduan interaktif.</div>
+<div id="guideActive" hidden><div class="guide-top"><span id="moveCounter">LANGKAH 1 / 1</span><span id="movePercent">0%</span></div><div class="progress-track"><div id="progressFill"></div></div>
+<div class="move-display"><div class="move-symbol" id="moveSymbol">R</div><div class="move-detail"><strong id="moveMeaning">Putar sisi kanan</strong><p id="moveDirection">Searah jarum jam, dilihat dari sisi yang diputar.</p></div></div>
+<p class="hint">Gerakan dibaca dari posisi Rubik yang sama seperti saat dipindai. Tombol Kembali menampilkan instruksi sebelumnya; jika sudah terlanjur memutar kubus, balikkan gerakan itu sebelum mengulang.</p>
+<div class="buttons nav-buttons"><button id="prevMove">← Kembali</button><button id="nextMove">Berikutnya →</button></div><div class="move-strip" id="moveStrip"></div><button id="copy" class="secondary">📋 Salin semua rumus</button><p id="progress" class="hint"></p></div>
+<p id="solution" class="status" hidden>Belum ada solusi.</p><p class="hint">Notasi: R kanan, L kiri, U atas, D bawah, F depan, B belakang. Tanda ' berarti berlawanan arah jarum jam, 2 berarti putar 180°.</p></section>
 <p class="hint">Privasi: video kamera diproses di perangkat. Solver menggunakan pustaka cubejs dari CDN sehingga perlu internet saat pertama dibuka. Kamera memerlukan HTTPS atau localhost.</p>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/cubejs@1.3.2/lib/cube.min.js"></script>
@@ -23,27 +32,127 @@ const names=['U','R','F','D','L','B'], descriptions=['Atas','Kanan','Depan','Baw
 const colors={U:'#f8f8f2',R:'#d93b38',F:'#39b96d',D:'#f5db37',L:'#ff921e',B:'#347be8'};
 const rgbMap={U:[245,245,245],R:[220,48,45],F:[40,170,72],D:[245,215,35],L:[250,125,24],B:[40,100,225]};
 let faces=Object.fromEntries(names.map(n=>[n,Array(9).fill(null)]));
-let current=0,chosen='U',stream=null,steps=[],stepIndex=0;
+let current=0,chosen='U',stream=null,steps=[],stepIndex=0;let pinkAlias='R';let liveColors=null,autoScan=true,stableCount=0,lastSignature='',autoSavedFace=-1;let liveConfidence=0,rawCenter=null;const calibration={};let recentScans=[];
 const $=id=>document.getElementById(id);
-function draw(){ $('current').textContent=names[current]+' ('+descriptions[current]+')';
-$('instruction').textContent='Arahkan sisi '+names[current]+' ke kamera dan tekan Ambil warna.';
-$('palette').innerHTML='';names.forEach(n=>{let b=document.createElement('button');b.className='swatch'+(chosen===n?' active':'');b.style.background=colors[n];b.title=n;b.onclick=()=>{chosen=n;draw()};$('palette').append(b)});
-$('faces').innerHTML='';names.forEach((n,idx)=>{let box=document.createElement('div');box.className='face';box.innerHTML='<strong>'+n+' · '+descriptions[idx]+'</strong>';let grid=document.createElement('div');grid.className='grid';faces[n].forEach((c,i)=>{let tile=document.createElement('div');tile.className='tile';tile.style.background=c?colors[c]:'#354258';tile.title=n+(i+1)+': '+(c||'belum diisi');tile.onclick=()=>{faces[n][i]=chosen;draw()};grid.append(tile)});box.append(grid);$('faces').append(box)})}
-function resize(){let v=$('video'),c=$('overlay');c.width=v.clientWidth*devicePixelRatio;c.height=v.clientHeight*devicePixelRatio;let x=c.getContext('2d');x.scale(devicePixelRatio,devicePixelRatio);let w=v.clientWidth,h=v.clientHeight,size=Math.min(w,h)*.63,ox=(w-size)/2,oy=(h-size)/2;x.strokeStyle='#00e5ff';x.lineWidth=3;for(let i=0;i<=3;i++){x.beginPath();x.moveTo(ox+i*size/3,oy);x.lineTo(ox+i*size/3,oy+size);x.moveTo(ox,oy+i*size/3);x.lineTo(ox+size,oy+i*size/3);x.stroke()}}
-$('start').onclick=async()=>{try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});$('video').srcObject=stream;await $('video').play();resize();$('cameraStatus').textContent='Kamera aktif. Sejajarkan sembilan kotak.'}catch(e){$('cameraStatus').textContent='Kamera gagal: '+e.message+'. Gunakan HTTPS atau localhost dan izinkan akses kamera.'}};
+$('pinkAlias').onchange=e=>{pinkAlias=e.target.value;draw()};$('pinkPick').onclick=()=>{chosen=pinkAlias;draw();$('validation').textContent='Pink dipilih sebagai warna '+pinkAlias+'. Sentuh kotak yang berwarna pink.'};
+function draw(){ $('scanProgress').innerHTML=names.map((n,i)=>'<div class="scan-dot '+(faces[n].every(Boolean)?'done':i===current?'now':'')+'"></div>').join(''); $('current').textContent=names[current]+' ('+descriptions[current]+')';
+$('instruction').textContent='Arahkan sisi '+names[current]+' ke kamera, tepatkan 9 kotak di bingkai, lalu tahan stabil.';
+$('palette').innerHTML='';names.forEach(n=>{let b=document.createElement('button');b.className='swatch'+(chosen===n?' active':'');b.style.background=(n===pinkAlias?'#ef78b6':colors[n]);b.title=n;b.onclick=()=>{chosen=n;draw()};$('palette').append(b)});
+$('faces').innerHTML='';names.forEach((n,idx)=>{let box=document.createElement('div');box.className='face';box.innerHTML='<strong>'+n+' · '+descriptions[idx]+'</strong>';let grid=document.createElement('div');grid.className='grid';faces[n].forEach((c,i)=>{let tile=document.createElement('div');tile.className='tile';tile.style.background=c?(c===pinkAlias?'#ef78b6':colors[c]):'#354258';tile.title=n+(i+1)+': '+(c||'belum diisi');tile.onclick=()=>{faces[n][i]=chosen;draw()};grid.append(tile)});box.append(grid);$('faces').append(box)})}
+
+const sampleCanvas=document.createElement('canvas'),sampleCtx=sampleCanvas.getContext('2d',{willReadFrequently:true});
+function median(values){const v=[...values].sort((a,b)=>a-b);return v[Math.floor(v.length/2)]}
+function colorDistance(a,b){
+ // Chromaticity reduces exposure differences while preserving pink/yellow distinction.
+ const sa=a[0]+a[1]+a[2]+1,sb=b[0]+b[1]+b[2]+1;
+ const ca=a.map(x=>x/sa),cb=b.map(x=>x/sb);
+ const chroma=ca.reduce((t,x,i)=>t+(x-cb[i])**2,0)*110000;
+ const brightness=Math.abs((a[0]+a[1]+a[2])-(b[0]+b[1]+b[2]))/3;
+ return chroma+brightness*.5;
+}
+function classifyWithConfidence(rgb){
+ const [r,g,b]=rgb, max=Math.max(r,g,b),min=Math.min(r,g,b);
+ if(max-min<31&&max>105)return {name:'U',confidence:Math.min(1,(max-min<16?.95:.77))};
+ const candidates=names.map(n=>({name:n,d:colorDistance(rgb,calibration[n]||(n===pinkAlias?[239,120,182]:rgbMap[n]))})).sort((a,b)=>a.d-b.d);
+ let best=candidates[0],second=candidates[1];
+ // White vs washed-out yellow: prioritize low saturation for white.
+ const confidence=Math.max(0,Math.min(1,(second.d-best.d)/(second.d+1)*1.7));
+ return {name:best.name,confidence};
+}
+function readLive(){
+ const v=$('video');if(!v.videoWidth||!v.clientWidth)return null;
+ const cw=v.videoWidth,ch=v.videoHeight;
+ if(sampleCanvas.width!==cw||sampleCanvas.height!==ch){sampleCanvas.width=cw;sampleCanvas.height=ch}
+ sampleCtx.drawImage(v,0,0,cw,ch);
+ const dw=v.clientWidth,dh=v.clientHeight,sz=Math.min(dw,dh)*.63,ox=(dw-sz)/2,oy=(dh-sz)/2;
+ const scale=Math.max(cw/dw,ch/dh),cropX=(cw-dw*scale)/2,cropY=(ch-dh*scale)/2;
+ const detected=[],confidence=[],raw=[];
+ for(let i=0;i<9;i++){
+  const col=i%3,row=Math.floor(i/3),px=cropX+(ox+(col+.5)*sz/3)*scale,py=cropY+(oy+(row+.5)*sz/3)*scale;
+  const rad=Math.max(3,Math.round(sz/17*scale)),left=Math.max(0,Math.min(cw-1,Math.round(px-rad))),top=Math.max(0,Math.min(ch-1,Math.round(py-rad)));
+  const dat=sampleCtx.getImageData(left,top,Math.max(1,Math.min(rad*2,cw-left)),Math.max(1,Math.min(rad*2,ch-top))).data;
+  const rs=[],gs=[],bs=[];
+  for(let j=0;j<dat.length;j+=16){rs.push(dat[j]);gs.push(dat[j+1]);bs.push(dat[j+2])}
+  const rgb=[median(rs),median(gs),median(bs)],result=classifyWithConfidence(rgb);
+  detected.push(result.name);confidence.push(result.confidence);raw.push(rgb);
+ }
+ return {detected,confidence,raw};
+}
+function resize(){let v=$('video'),c=$('overlay');if(!v.clientWidth)return;c.width=v.clientWidth*devicePixelRatio;c.height=v.clientHeight*devicePixelRatio;drawOverlay()}
+function drawOverlay(){
+const v=$('video'),c=$('overlay');if(!c.width)return;
+let x=c.getContext('2d');x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);x.clearRect(0,0,v.clientWidth,v.clientHeight);
+let w=v.clientWidth,h=v.clientHeight,size=Math.min(w,h)*.63,ox=(w-size)/2,oy=(h-size)/2;
+x.strokeStyle='#00e5ff';x.lineWidth=2;
+for(let i=0;i<=3;i++){x.beginPath();x.moveTo(ox+i*size/3,oy);x.lineTo(ox+i*size/3,oy+size);x.moveTo(ox,oy+i*size/3);x.lineTo(ox+size,oy+i*size/3);x.stroke()}
+if(liveColors)liveColors.forEach((n,i)=>{let cx=ox+(i%3+.5)*size/3,cy=oy+(Math.floor(i/3)+.5)*size/3;x.beginPath();x.arc(cx,cy,Math.max(9,size/17),0,Math.PI*2);x.fillStyle=n===pinkAlias?'#ef78b6':colors[n];x.fill();x.lineWidth=2;x.strokeStyle='#101828';x.stroke()});
+}
+function renderLive(){
+const g=$('liveGrid');g.innerHTML='';
+(liveColors||Array(9).fill(null)).forEach(n=>{let t=document.createElement('div');t.className='tile';t.style.background=n?(n===pinkAlias?'#ef78b6':colors[n]):'#354258';g.append(t)});
+drawOverlay();
+}
+function saveLive(auto=false){
+if(!liveColors){$('cameraStatus').textContent='Aktifkan kamera dan arahkan ke Rubik dahulu.';return}
+if(liveColors[4]!==names[current]){$('cameraStatus').textContent='Warna pusat tidak sesuai sisi '+names[current]+'. Pilih sisi yang benar atau periksa pencahayaan.';return}
+faces[names[current]]=[...liveColors];autoSavedFace=current;draw();
+$('cameraStatus').textContent='✓ Sisi '+names[current]+' tersimpan'+(auto?' otomatis':'')+'. Periksa hasil lalu tekan Sisi berikutnya.';
+}
+$('start').onclick=async()=>{try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});$('video').srcObject=stream;await $('video').play();resize();$('cameraStatus').textContent='Kamera aktif. Warna diperbarui secara langsung.'}catch(e){$('cameraStatus').textContent='Kamera gagal: '+e.message+'. Gunakan HTTPS atau localhost dan izinkan akses kamera.'}};
 window.addEventListener('resize',resize);
-function classify(rgb){let best=null,score=Infinity;const [r,g,b]=rgb;let mx=Math.max(r,g,b),mn=Math.min(r,g,b),sat=mx-mn;
-if(mx>145&&sat<43)return 'U';
-for(const n of names){const t=rgbMap[n];let d=(r-t[0])**2+(g-t[1])**2+(b-t[2])**2;if(d<score){score=d;best=n}}return best}
-$('capture').onclick=()=>{const v=$('video');if(!v.videoWidth){$('cameraStatus').textContent='Nyalakan kamera dulu.';return}
-const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(v,0,0);const dw=v.clientWidth,dh=v.clientHeight,sz=Math.min(dw,dh)*.63,ox=(dw-sz)/2,oy=(dh-sz)/2;
-const scale=Math.max(c.width/dw,c.height/dh),shownW=c.width/scale,shownH=c.height/scale,cropX=(c.width-shownW)/2,cropY=(c.height-shownH)/2;
-for(let i=0;i<9;i++){const col=i%3,row=Math.floor(i/3),px=cropX+(ox+(col+.5)*sz/3)*scale,py=cropY+(oy+(row+.5)*sz/3)*scale,rad=Math.max(2,Math.round(sz/18*scale));let dat=x.getImageData(Math.max(0,Math.round(px-rad)),Math.max(0,Math.round(py-rad)),Math.min(rad*2,c.width-Math.round(px-rad)),Math.min(rad*2,c.height-Math.round(py-rad))).data;let sum=[0,0,0],num=0;for(let j=0;j<dat.length;j+=4){sum[0]+=dat[j];sum[1]+=dat[j+1];sum[2]+=dat[j+2];num++}faces[names[current]][i]=classify(sum.map(z=>z/num))}
-$('cameraStatus').textContent='Sisi '+names[current]+' terekam. Periksa warna pada panel bawah.';draw()};
-$('next').onclick=()=>{current=(current+1)%6;draw()};
-$('reset').onclick=()=>{faces=Object.fromEntries(names.map(n=>[n,Array(9).fill(null)]));steps=[];$('solution').textContent='Belum ada solusi.';$('validation').textContent='';draw()};
+function classify(rgb){return classifyWithConfidence(rgb).name}
+$('calibrate').onclick=()=>{
+ if(!rawCenter){$('cameraStatus').textContent='Nyalakan kamera dulu.';return}
+ calibration[names[current]]=[...rawCenter];recentScans=[];stableCount=0;
+ $('calibrationInfo').textContent='Terkalibrasi: '+Object.keys(calibration).join(', ')+'. Ulangi pada sisi lain untuk meningkatkan akurasi.';
+ $('cameraStatus').textContent='Warna pusat '+names[current]+' berhasil dikalibrasi.';
+};
+$('clearCalibration').onclick=()=>{for(const n of names)delete calibration[n];recentScans=[];stableCount=0;$('calibrationInfo').textContent='Kalibrasi dihapus. Gunakan cahaya terang untuk hasil terbaik.'};
+$('capture').onclick=()=>saveLive(false);
+$('autoToggle').onclick=()=>{autoScan=!autoScan;$('autoToggle').textContent='Auto-scan: '+(autoScan?'ON':'OFF');stableCount=0};
+setInterval(()=>{
+ if(!$('video').videoWidth)return;
+ try{
+  const scan=readLive();if(!scan)return;
+  rawCenter=scan.raw[4];recentScans.push(scan);if(recentScans.length>10)recentScans.shift();
+  const majority=Array.from({length:9},(_,i)=>{
+   const votes={};recentScans.forEach(f=>votes[f.detected[i]]=(votes[f.detected[i]]||0)+1);
+   return Object.entries(votes).sort((a,b)=>b[1]-a[1])[0][0];
+  });
+  liveColors=majority;renderLive();
+  const consistency=majority.reduce((sum,n,i)=>sum+recentScans.filter(f=>f.detected[i]===n).length/recentScans.length,0)/9;
+  const confidence=scan.confidence.reduce((a,b)=>a+b,0)/9;
+  liveConfidence=Math.round(100*(consistency*.65+confidence*.35));
+  const sig=majority.join('');
+  const centerOK=majority[4]===names[current];
+  const ready=recentScans.length>=8&&consistency>=.96&&confidence>=.42&&centerOK;
+  stableCount=ready&&sig===lastSignature?stableCount+1:0;lastSignature=sig;
+  const percent=Math.min(100,Math.round(stableCount/9*100));
+  $('stabilityFill').style.width=percent+'%';
+  $('scanQuality').textContent=!centerOK?'⚠️ Warna tengah tidak sesuai sisi '+names[current]+'. Periksa posisi atau kalibrasi.':confidence<.42?'⚠️ Warna kurang jelas. Perbaiki cahaya atau lakukan kalibrasi.':consistency<.96?'⏳ Tahan Rubik lebih stabil. Kesesuaian '+Math.round(consistency*100)+'%.':'✓ Deteksi stabil • keyakinan '+liveConfidence+'% • '+percent+'% siap disimpan';
+  if(autoScan&&autoSavedFace!==current&&stableCount>=9)saveLive(true);
+ }catch(e){$('cameraStatus').textContent='Gagal membaca warna kamera: '+e.message}
+},200);
+$('next').onclick=()=>{current=(current+1)%6;stableCount=0;lastSignature='';autoSavedFace=-1;recentScans=[];liveColors=null;draw()};
+$('reset').onclick=()=>{faces=Object.fromEntries(names.map(n=>[n,Array(9).fill(null)]));steps=[];autoSavedFace=-1;stableCount=0;$('solution').textContent='Belum ada solusi.';$('validation').textContent='';$('guideActive').hidden=true;$('guideEmpty').hidden=false;draw()};
 function validate(){const counts=Object.fromEntries(names.map(n=>[n,0]));for(const n of names){if(faces[n].some(x=>!x))throw Error('Sisi '+n+' belum lengkap.');if(faces[n][4]!==n)throw Error('Pusat sisi '+n+' harus berwarna '+n+'. Pastikan urutan sisi benar.');for(const c of faces[n])counts[c]++}for(const n of names)if(counts[n]!==9)throw Error('Warna '+n+' berjumlah '+counts[n]+' kotak, seharusnya 9.');return names.map(n=>faces[n].join('')).join('')}
-function displayMove(){if(!steps.length){$('progress').textContent='';return}$('solution').textContent=stepIndex<steps.length?steps[stepIndex]:'Selesai!';$('progress').textContent='Langkah '+Math.min(stepIndex+1,steps.length)+' dari '+steps.length+' | Semua: '+steps.join(' ')}
-$('solve').onclick=()=>{try{let str=validate();if(typeof Cube==='undefined')throw Error('Pustaka solver belum termuat. Pastikan internet aktif dan muat ulang halaman.');$('validation').textContent='Menghitung solusi…';setTimeout(()=>{try{if(!window.cubeReady){Cube.initSolver();window.cubeReady=true}const cube=Cube.fromString(str);let result=cube.solve();steps=result.trim()?result.trim().split(/\s+/):[];stepIndex=0;$('validation').textContent='Valid! '+steps.length+' langkah ditemukan.';$('solution').textContent=steps.length?'': 'Rubik sudah selesai.';displayMove()}catch(e){$('validation').textContent='Tidak bisa diselesaikan: '+e.message+'. Cek orientasi scan dan warna.'}},30)}catch(e){$('validation').textContent=e.message}};
+const moveLabels={R:'Kanan',L:'Kiri',U:'Atas',D:'Bawah',F:'Depan',B:'Belakang'};
+function displayMove(){
+const active=steps.length>0; $('guideEmpty').hidden=active; $('guideActive').hidden=!active;
+$('solveStage').classList.toggle('active',active); $('scanStage').classList.toggle('active',!active);
+if(!active)return;
+const done=stepIndex>=steps.length,move=steps[stepIndex]||'',side=move[0],double=move.includes('2'),prime=move.includes("'");
+$('moveCounter').textContent=done?'SELESAI':`LANGKAH ${stepIndex+1} / ${steps.length}`;
+const percent=Math.round(stepIndex/steps.length*100);$('movePercent').textContent=percent+'%';$('progressFill').style.width=percent+'%';
+$('moveSymbol').textContent=done?'✓':move;
+$('moveMeaning').textContent=done?'Rubik selesai!':`Putar sisi ${moveLabels[side]||side}`;
+$('moveDirection').textContent=done?'Semua langkah telah ditampilkan.':double?'Putar 180° (dua kali seperempat putaran).':prime?'Berlawanan arah jarum jam, dilihat langsung dari sisi tersebut.':'Searah jarum jam, dilihat langsung dari sisi tersebut.';
+$('prevMove').disabled=stepIndex===0;$('nextMove').disabled=done;
+$('nextMove').textContent=stepIndex===steps.length-1?'Tandai selesai ✓':'Berikutnya →';
+$('moveStrip').innerHTML='';steps.forEach((m,i)=>{let chip=document.createElement('button');chip.className='move-chip '+(i===stepIndex?'current':i<stepIndex?'past':'');chip.textContent=m;chip.title='Buka langkah '+(i+1);chip.onclick=()=>{stepIndex=i;displayMove()};$('moveStrip').append(chip)});
+const selected=$('moveStrip').children[stepIndex];if(selected)selected.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+$('progress').textContent='Kamu bisa kembali ke langkah sebelumnya kapan saja.';
+}
+$('solve').onclick=()=>{try{let str=validate();if(typeof Cube==='undefined')throw Error('Pustaka solver belum termuat. Pastikan internet aktif dan muat ulang halaman.');$('validation').textContent='Menghitung solusi…';setTimeout(()=>{try{if(!window.cubeReady){Cube.initSolver();window.cubeReady=true}const cube=Cube.fromString(str);let result=cube.solve();steps=result.trim()?result.trim().split(/\s+/):[];stepIndex=0;$('validation').textContent='Valid! '+steps.length+' langkah ditemukan.';$('solution').textContent=steps.length?'': 'Rubik sudah selesai.';if(!steps.length){$('guideEmpty').textContent='🎉 Rubik sudah selesai!';}displayMove();document.getElementById('guide').scrollIntoView({behavior:'smooth',block:'start'})}catch(e){$('validation').textContent='Tidak bisa diselesaikan: '+e.message+'. Cek orientasi scan dan warna.'}},30)}catch(e){$('validation').textContent=e.message}};
 $('prevMove').onclick=()=>{stepIndex=Math.max(0,stepIndex-1);displayMove()};$('nextMove').onclick=()=>{stepIndex=Math.min(steps.length,stepIndex+1);displayMove()};$('copy').onclick=async()=>{if(steps.length)await navigator.clipboard.writeText(steps.join(' '))};draw();
 </script></body></html>
